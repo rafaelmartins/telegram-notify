@@ -128,9 +128,9 @@ func main() {
 		limit     int
 	)
 
-	flag.StringVar(&id, "id", "", "notification identifier (e.g. machine hostname)")
+	flag.StringVar(&id, "id", "", "notification origin identifier (e.g. machine hostname)")
 	flag.BoolVar(&onSuccess, "success", false, "send notification if command executed successfully")
-	flag.IntVar(&limit, "limit", 1024, "limit size of stream data sent in notification")
+	flag.IntVar(&limit, "limit", 1024, "limit size of stream data (in bytes) to send in notifications")
 	flag.Parse()
 
 	args := flag.Args()
