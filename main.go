@@ -140,12 +140,12 @@ func main() {
 		return
 	}
 
-	token, ok := os.LookupEnv("TELEGRAM_TOKEN")
+	token, ok := os.LookupEnv("TELEGRAM_NOTIFY_TOKEN")
 	if !ok {
 		log.Fatal("error: telegram token not defined")
 	}
 
-	chatId, ok := os.LookupEnv("TELEGRAM_CHAT_ID")
+	chatId, ok := os.LookupEnv("TELEGRAM_NOTIFY_CHAT_ID")
 	if !ok {
 		log.Fatal("error: telegram chat id not defined")
 	}

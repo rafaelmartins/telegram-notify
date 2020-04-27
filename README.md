@@ -13,5 +13,5 @@ Where `-id=ID` provides an identifier of the notification origin (usually the ho
 
 The command requires 2 environment variables:
 
-- `TELEGRAM_TOKEN`: Telegram Bot token, that identifies the bot to be used to send the notifications. To create it, talk to the `@BotFather` Telegram bot.
-- `TELEGRAM_CHAT_ID`: The numeric ID of the Telegram chat (user or group) to send the notifications to. To get it, use something like the `@getidsbot` Telegram bot.
+- `TELEGRAM_NOTIFY_TOKEN`: Telegram Bot token, that identifies the bot to be used to send the notifications. To create it, talk to the `@BotFather` Telegram bot.
+- `TELEGRAM_NOFITY_CHAT_ID`: The numeric ID of the Telegram chat (user or group) to send the notifications to. To get it, use something like the `@getidsbot` Telegram bot.
