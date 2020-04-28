@@ -68,13 +68,16 @@ func (t *telegram) request(method string, parameters url.Values, result interfac
 	return nil
 }
 
-func (t *telegram) sendMessage(chatId string, text string, replyTo int) (int, error) {
+func (t *telegram) sendMessage(chatId string, text string, disableNotification bool, replyToMessageId int) (int, error) {
 	v := url.Values{}
 	v.Set("chat_id", chatId)
 	v.Set("text", text)
 	v.Set("parse_mode", "MarkdownV2")
-	if replyTo >= 0 {
-		v.Set("reply_to_message_id", fmt.Sprintf("%d", replyTo))
+	if disableNotification {
+		v.Set("disable_notification", "true")
+	}
+	if replyToMessageId >= 0 {
+		v.Set("reply_to_message_id", fmt.Sprintf("%d", replyToMessageId))
 	}
 
 	type message struct {
@@ -165,7 +168,7 @@ func main() {
 		msg += "Command error\n\n"
 		msg += fmt.Sprintf("*Command:* %q\n", args)
 		msg += fmt.Sprintf("```\n%s```\n", cmdErr)
-		if _, err := t.sendMessage(chatId, msg, -1); err != nil {
+		if _, err := t.sendMessage(chatId, msg, false, -1); err != nil {
 			log.Fatal(err)
 		}
 		log.Fatalf("error: failed to run program: %q: %s", args, cmdErr)
@@ -193,7 +196,7 @@ func main() {
 		msg += fmt.Sprintf("*Streams:* %s\n", strings.Join(streamNames, ", "))
 	}
 
-	msgId, err := t.sendMessage(chatId, msg, -1)
+	msgId, err := t.sendMessage(chatId, msg, onSuccess && status == 0, -1)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -205,7 +208,7 @@ func main() {
 		} else {
 			msg += fmt.Sprintf("```\n%s```", stream)
 		}
-		if _, err := t.sendMessage(chatId, msg, msgId); err != nil {
+		if _, err := t.sendMessage(chatId, msg, onSuccess && status == 0, msgId); err != nil {
 			log.Fatal(err)
 		}
 	}
