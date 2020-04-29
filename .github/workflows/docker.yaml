@@ -18,10 +18,9 @@ jobs:
         run: docker build . --file Dockerfile --tag telegram-notify
 
       - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Push image
         run: |
-          IMAGE_ID=docker.pkg.github.com/rafaelmartins/telegram-notify/telegram-notify
-          docker tag telegram-notify $IMAGE_ID:latest
-          docker push $IMAGE_ID:latest
+          docker tag telegram-notify rafaelmartins/telegram-notify:latest
+          docker push rafaelmartins/telegram-notify:latest
