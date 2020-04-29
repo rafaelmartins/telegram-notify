@@ -1,0 +1,27 @@
+name: docker
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 20 * * *"
+
+jobs:
+  docker:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag telegram-notify
+
+      - name: Log into registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          IMAGE_ID=docker.pkg.github.com/rafaelmartins/telegram-notify/telegram-notify
+          docker tag telegram-notofu $IMAGE_ID:latest
+          docker push $IMAGE_ID:latest
