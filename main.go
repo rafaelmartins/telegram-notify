@@ -137,6 +137,9 @@ func main() {
 	flag.Parse()
 
 	args := flag.Args()
+	if len(args) == 0 {
+		return
+	}
 
 	status, stdout, stderr, cmdErr := runCommand(args)
 	if cmdErr == nil && status == 0 && !onSuccess {
