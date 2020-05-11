@@ -5,7 +5,7 @@ ADD . /code
 RUN set -x \
     && ( \
         cd /code \
-        && go build -o telegram-notify . \
+        && CGO_ENABLED=0 go build -o telegram-notify . \
     )
 
 
