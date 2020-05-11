@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html"
 	"io"
 	"log"
 	"net/http"
@@ -72,7 +73,7 @@ func (t *telegram) sendMessage(chatId string, text string, disableNotification b
 	v := url.Values{}
 	v.Set("chat_id", chatId)
 	v.Set("text", text)
-	v.Set("parse_mode", "MarkdownV2")
+	v.Set("parse_mode", "HTML")
 	if disableNotification {
 		v.Set("disable_notification", "true")
 	}
@@ -164,13 +165,13 @@ func main() {
 
 	msg := ""
 	if id != "" {
-		msg += fmt.Sprintf("*%s:* ", id)
+		msg += fmt.Sprintf("<strong>%s:</strong> ", id)
 	}
 
 	if cmdErr != nil {
 		msg += "Command error\n\n"
-		msg += fmt.Sprintf("*Command:* %q\n", args)
-		msg += fmt.Sprintf("```\n%s```\n", cmdErr)
+		msg += fmt.Sprintf("<strong>Command:</strong> %s\n", html.EscapeString(fmt.Sprintf("%q", args)))
+		msg += fmt.Sprintf("<pre>%s</pre>", html.EscapeString(cmdErr.Error()))
 		if _, err := t.sendMessage(chatId, msg, false, -1); err != nil {
 			log.Fatal(err)
 		}
@@ -193,10 +194,10 @@ func main() {
 	} else {
 		msg += "Failure\n\n"
 	}
-	msg += fmt.Sprintf("*Command:* `%q`\n", args)
-	msg += fmt.Sprintf("*Exit status:* %d\n", status)
+	msg += fmt.Sprintf("<strong>Command:</strong> <code>%s</code>\n", html.EscapeString(fmt.Sprintf("%q", args)))
+	msg += fmt.Sprintf("<strong>Exit status:</strong> %d\n", status)
 	if len(streamNames) > 0 {
-		msg += fmt.Sprintf("*Streams:* %s\n", strings.Join(streamNames, ", "))
+		msg += fmt.Sprintf("<strong>Streams:</strong> %s\n", strings.Join(streamNames, ", "))
 	}
 
 	msgId, err := t.sendMessage(chatId, msg, onSuccess && status == 0, -1)
@@ -205,11 +206,11 @@ func main() {
 	}
 
 	for i, stream := range streams {
-		msg := fmt.Sprintf("*%s:*\n", streamNames[i])
+		msg := fmt.Sprintf("<strong>%s:</strong>\n", streamNames[i])
 		if len(stream) > limit {
-			msg += fmt.Sprintf("```\n...%s```", stream[len(stream)-limit:])
+			msg += fmt.Sprintf("<pre>...%s</pre>", html.EscapeString(string(stream[len(stream)-limit:])))
 		} else {
-			msg += fmt.Sprintf("```\n%s```", stream)
+			msg += fmt.Sprintf("<pre>%s</pre>", html.EscapeString(string(stream)))
 		}
 		if _, err := t.sendMessage(chatId, msg, onSuccess && status == 0, msgId); err != nil {
 			log.Fatal(err)
