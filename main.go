@@ -47,6 +47,7 @@ func (t *telegram) request(method string, parameters url.Values, result interfac
 	if err != nil {
 		return err
 	}
+	defer r.Body.Close()
 
 	type base struct {
 		Ok          bool        `json:"ok"`
