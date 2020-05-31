@@ -14,6 +14,7 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
+	"time"
 )
 
 type telegram struct {
@@ -143,7 +144,9 @@ func main() {
 		return
 	}
 
+	start := time.Now()
 	status, stdout, stderr, cmdErr := runCommand(args)
+	elapsed := time.Since(start)
 	if cmdErr == nil && status == 0 && !onSuccess {
 		return
 	}
@@ -172,6 +175,7 @@ func main() {
 	if cmdErr != nil {
 		msg += "Command error\n\n"
 		msg += fmt.Sprintf("<strong>Command:</strong> %s\n", html.EscapeString(fmt.Sprintf("%q", args)))
+		msg += fmt.Sprintf("<strong>Elapsed time:</strong> %s\n", html.EscapeString(elapsed.String()))
 		msg += fmt.Sprintf("<pre>%s</pre>", html.EscapeString(cmdErr.Error()))
 		if _, err := t.sendMessage(chatId, msg, false, -1); err != nil {
 			log.Fatal(err)
@@ -196,6 +200,7 @@ func main() {
 		msg += "Failure\n\n"
 	}
 	msg += fmt.Sprintf("<strong>Command:</strong> <code>%s</code>\n", html.EscapeString(fmt.Sprintf("%q", args)))
+	msg += fmt.Sprintf("<strong>Elapsed time:</strong> %s\n", html.EscapeString(elapsed.String()))
 	msg += fmt.Sprintf("<strong>Exit status:</strong> %d\n", status)
 	if len(streamNames) > 0 {
 		msg += fmt.Sprintf("<strong>Streams:</strong> %s\n", strings.Join(streamNames, ", "))
