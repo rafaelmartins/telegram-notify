@@ -174,8 +174,8 @@ func main() {
 
 	if cmdErr != nil {
 		msg += "Command error\n\n"
-		msg += fmt.Sprintf("<strong>Command:</strong> %s\n", html.EscapeString(fmt.Sprintf("%q", args)))
-		msg += fmt.Sprintf("<strong>Elapsed time:</strong> %s\n", html.EscapeString(elapsed.String()))
+		msg += fmt.Sprintf("<strong>Command:</strong> <code>%s</code>\n", html.EscapeString(fmt.Sprintf("%q", args)))
+		msg += fmt.Sprintf("<strong>Elapsed time:</strong> <code>%s</code>\n", html.EscapeString(elapsed.String()))
 		msg += fmt.Sprintf("<pre>%s</pre>", html.EscapeString(cmdErr.Error()))
 		if _, err := t.sendMessage(chatId, msg, false, -1); err != nil {
 			log.Fatal(err)
@@ -200,10 +200,10 @@ func main() {
 		msg += "Failure\n\n"
 	}
 	msg += fmt.Sprintf("<strong>Command:</strong> <code>%s</code>\n", html.EscapeString(fmt.Sprintf("%q", args)))
-	msg += fmt.Sprintf("<strong>Elapsed time:</strong> %s\n", html.EscapeString(elapsed.String()))
-	msg += fmt.Sprintf("<strong>Exit status:</strong> %d\n", status)
+	msg += fmt.Sprintf("<strong>Elapsed time:</strong> <code>%s</code>\n", html.EscapeString(elapsed.String()))
+	msg += fmt.Sprintf("<strong>Exit status:</strong> <code>%d</code>\n", status)
 	if len(streamNames) > 0 {
-		msg += fmt.Sprintf("<strong>Streams:</strong> %s\n", strings.Join(streamNames, ", "))
+		msg += fmt.Sprintf("<strong>Streams:</strong> <code>%s</code>\n", strings.Join(streamNames, ", "))
 	}
 
 	msgId, err := t.sendMessage(chatId, msg, onSuccess && status == 0, -1)
